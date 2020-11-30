@@ -61,7 +61,7 @@ def main():
         dist_table = []
         for j in array_trainx:
             dist_table.append(distance.euclidean(i, j))
-        largestInex.append(sorted(range(len(dist_table)), key=lambda sub: dist_table[sub])[-k:])
+        largestInex.append(sorted(range(len(dist_table)), key=lambda sub: dist_table[sub])[:k])
         zeroCntr = 0
         oneCntr = 0
         twoCntr = 0
