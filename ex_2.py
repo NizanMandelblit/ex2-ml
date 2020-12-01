@@ -3,6 +3,7 @@ from scipy.spatial import distance
 import sys
 import copy
 
+
 def main():
     trainExemple = sys.argv[1]
     trainLabels = sys.argv[2]
@@ -14,7 +15,7 @@ def main():
     for line in f:
         array_trainy.append(int(line))
     f.close()
-    #noramilze train_x
+    # noramilze train_x
     f = open(trainExemple, "r")
     s = f.read().replace('W', '1')
     s = s.replace('R', '0')
@@ -64,7 +65,7 @@ def main():
     largestInex = []
     resultsKNN = []
     k = 7
-    cntr=0
+    cntr = 0
     for i in array_testx:
         dist_table = []
         for j in array_trainx:
@@ -80,49 +81,51 @@ def main():
                 oneCntr += 1
             elif array_trainy[index] == 2:
                 twoCntr += 1
-        if zeroCntr==max(zeroCntr, oneCntr, twoCntr):
+        if zeroCntr == max(zeroCntr, oneCntr, twoCntr):
             resultsKNN.append(0)
-        elif oneCntr==max(zeroCntr, oneCntr, twoCntr):
+        elif oneCntr == max(zeroCntr, oneCntr, twoCntr):
             resultsKNN.append(1)
         else:
             resultsKNN.append(2)
-        cntr+=1
+        cntr += 1
 
-    #preceptron
-    learnRate=0.1
-    iterNum=5
-    classMatrix=[[0 for x in range(13)] for y in range(3)]
-    copy_x=[]
-    kmax=[]
+    # preceptron
+    learnRate = 0.1
+    iterNum = 1
+    classMatrix = [[0 for x in range(13)] for y in range(3)]
+    copy_x = []
+    kmax = []
     for i in array_trainx:
         copy_x.append(copy.deepcopy(i))
     for i in copy_x:
         i.append(1.0)
     for i in range(iterNum):
         for j in range(len(copy_x)):
+            kmax = []
             for k in range(len(classMatrix)):
-                y=np.transpose(classMatrix[k])
-                kmax.append(np.dot(y,copy_x[j]))
-            kmax.index(max(kmax))
-            if array_trainy[j]!=k:
-                classMatrix[array_trainy[j]]+=(learnRate*copy_x[j])
-                classMatrix[k]-=(learnRate*copy_x[j])
+                y = np.transpose(classMatrix[k])
+                kmax.append(np.dot(y, copy_x[j]))
+            k = kmax.index(max(kmax))
+            if array_trainy[j] != k:
+                for p in range(len(copy_x[j])):
+                    classMatrix[array_trainy[j]][p] += (learnRate * copy_x[j][p])
+                    classMatrix[k][p] -= (learnRate * copy_x[j][p])
 
-    copy_test_x=[]
+    prestperonrslt = []
+    copy_test_x = []
     for i in array_testx:
         copy_test_x.append(copy.deepcopy(i))
     for i in copy_test_x:
         i.append(1.0)
-    kmax=[]
+
     for i in range(iterNum):
         for j in range(len(copy_test_x)):
+            kmax = []
             for k in range(len(classMatrix)):
-                y=np.transpose(classMatrix[k])
-                kmax.append(np.dot(y,copy_test_x[j]))
-
+                y = np.transpose(classMatrix[k])
+                kmax.append(np.dot(y, copy_test_x[j]))
+            prestperonrslt.append(kmax.index(max(kmax)))
     print("sfc")
-
-
 
 
 if __name__ == '__main__':
